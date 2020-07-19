@@ -1,7 +1,7 @@
 import tensorflow as tf
 import streamlit as st
 
-best_model = tf.keras.models.load_model('model/')
+best_model = tf.keras.models.load_model('model/best_vgg16.pb')
 best_model.summary()
 
 st.write("""
