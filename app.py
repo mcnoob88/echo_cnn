@@ -1,8 +1,11 @@
 import tensorflow as tf
 import streamlit as st
+from tensorflow import keras
+import cv2
+from PIL import Image, ImageOps
+import numpy as np
 
-best_model = tf.keras.models.load_model('model/best_vgg16.pb')
-best_model.summary()
+model = keras.models.load_model('model/best_vgg16.pb')
 
 st.write("""
          # Echocardiogram View Prediction
@@ -11,11 +14,7 @@ st.write("""
 st.write("This web app classify the view of Echocardiogram")
 file = st.file_uploader("Please upload an image file", type=["jpg", "png"])
 
-import cv2
-from PIL import Image, ImageOps
-import numpy as np
-
-def import_and_predict(image_data, best_model):
+def import_and_predict(image_data, model):
     
         size = (150,150)    
         image = ImageOps.fit(image_data, size, Image.ANTIALIAS)
@@ -25,14 +24,14 @@ def import_and_predict(image_data, best_model):
         
         img_reshape = img_resize[np.newaxis,...]
     
-        prediction = best_model.predict(img_reshape)
+        prediction = model.predict(img_reshape)
         return prediction
 if file is None:
         st.text("Please upload an image file")
 else:
     image = Image.open(file)
     st.image(image, use_column_width=True)
-    prediction = import_and_predict(image, best_model)
+    prediction = import_and_predict(image, model)
     
     if np.argmax(prediction) == 0:
         st.write("AP2")
